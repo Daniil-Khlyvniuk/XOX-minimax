@@ -1,22 +1,18 @@
+import { AI } from "./components/AI"
 import { Board } from "./components/Board"
-import { initFirework } from "./components/Firework"
+import { initFirework, stopFirework } from "./components/Firework"
+import { Modal } from "./components/Modal"
 import { Player } from "./components/Player"
-import { AI } from "./components/ComputerPlayer"
 
 
 export const cnv = document.querySelector("#gameAria")
 export const ctx = cnv.getContext("2d")
 export const FieldSize = cnv.width / 3
-export const board = new Board([
-	[ "", "", "" ],
-	[ "", "", "" ],
-	[ "", "", "" ]
-])
-
-
-export let currPlayer = "o"
-export const hu = new Player("o")
-export const AI_PLAYER = new AI("o")
+export let currPlayer = "x"
+export let AI_PLAYER = null
+export let hu = null
+export let board = null
+export let drawAmim
 
 export const setCurrPlayer = (val) => {
 	currPlayer = val
@@ -36,30 +32,56 @@ const draw = () => {
 	ctx.textAlign = "center"
 	ctx.fillText(`The draw`, cnv.width / 2, cnv.height / 2)
 
-	requestAnimationFrame(draw)
+	drawAmim = requestAnimationFrame(draw)
 }
-const win = (isWon, isDraw) => {
-	cnv.removeEventListener("click", hu.move(board))
-	cnv.style.cursor = "initial";
 
-	// (isWon) && setTimeout(initFirework, 600);
-	// (isDraw) && setTimeout(draw, 600)
-}
-const gameOver = () => {
-}
-const gamePlay = () => {
-	switch (currPlayer) {
-		case hu.symbol:
-			cnv.addEventListener("click", AI_PLAYER.move(board))
-			// cnv.addEventListener("click", hu.move(board))
-			return
-		case AI_PLAYER.symbol:
-			// const [ i, j ] = AI_PLAYER.getBestMove(board)
-			// cnv.addEventListener("MouseUp", AI_PLAYER.move(board, i, j))
-			// currPlayer = hu.symbol
-			// return
+export const gameOver = ({ winner }) => {
+	cnv.removeEventListener("click", hu.move(board))
+	cnv.style.cursor = "initial"
+
+	switch (winner) {
+		case "x":
+		case "o":
+			return setTimeout(initFirework(winner), 600)
+		default:
+			return setTimeout(draw, 600)
 	}
 }
-requestAnimationFrame(board.draw)
-gamePlay()
-// cnv.addEventListener("click", hu.move(board))
+
+const startGame = (AI, HU, board) => {
+	requestAnimationFrame(board.draw)
+
+	if (AI.symbol === "x") {
+		setTimeout(AI.move(board), 1000)
+		setTimeout(() => {
+			cnv.style.cursor = "pointer"
+			cnv.addEventListener("click", HU.move(board, AI))
+		}, 1500)
+
+	} else {
+		cnv.style.cursor = "pointer"
+		cnv.addEventListener("click", HU.move(board, AI))
+	}
+}
+
+export const newGame = (playerSymb) => {
+	cnv.width = 600
+	cnv.height = 600
+	currPlayer = "x"
+	cancelAnimationFrame(drawAmim)
+	stopFirework()
+
+	let aiSymb = playerSymb === "x" ? "o" : "x"
+	AI_PLAYER = new AI(aiSymb)
+	hu = new Player(playerSymb)
+	board = new Board([
+		[ "", "", "" ],
+		[ "", "", "" ],
+		[ "", "", "" ]
+	])
+
+	startGame(AI_PLAYER, hu, board)
+}
+
+
+new Modal

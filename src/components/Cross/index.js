@@ -12,7 +12,7 @@ export class Cross {
 		this.firstLine = []
 	}
 
-	 render = this.firstLine.bind(this)
+	render = this.drawFirstLine.bind(this)
 	secLine = this.secondLine.bind(this)
 
 	lineStyles() {
@@ -52,7 +52,7 @@ export class Cross {
 		}
 	}
 
-	firstLine() {
+	drawFirstLine() {
 		const { x, y, size, gap, lineStyles, secLine, render } = this
 
 		ctx.save()

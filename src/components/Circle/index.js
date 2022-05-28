@@ -34,7 +34,6 @@ export class Circle {
 			ctx.stroke()
 			ctx.restore()
 
-			console.log("draw", x, y, radius, endPercent)
 			this.curPerc++;
 			(this.curPerc < endPercent) && requestAnimationFrame(this.render(this.curPerc / 100));
 			(this.curPerc === endPercent) && (this.curPerc = 0)

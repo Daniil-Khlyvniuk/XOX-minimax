@@ -45,7 +45,6 @@ export class Board {
 		)
 	]
 	draw = this.drawGrid.bind(this)
-	hasWon = this.isWin.bind(this)
 	insert = this.insertSymbol.bind(this)
 
 
@@ -57,21 +56,12 @@ export class Board {
 		return this.state.every(row => row.every(el => el))
 	}
 
-	getAvailableMoves() {
-		const moves = []
-		this.state.forEach((row, i) => row.forEach((el, j) => {
-			if (!el) moves.push([ i, j ])
-		}))
-		return moves
-	}
-
 	insertSymbol(sym, i, j) {
 		if (!!this.state[i][j]) return
 		this.state[i][j] = sym.toLowerCase()
 	}
 
 	drawSymbol(currSymbol, i, j, x, y) {
-		console.log("test")
 		switch (currSymbol) {
 			case "x":
 				const cross = new Cross(x, y, this.FieldSize)
@@ -98,7 +88,7 @@ export class Board {
 		if (!!state[0][2] && (state[0][2] === state[1][2]) && (state[1][2] === state[2][2])) return { winner: state[0][2] } // vert
 
 		if (!!state[0][0] && (state[0][0] === state[1][1]) && (state[1][1] === state[2][2])) return { winner: state[0][0] } // diag
-		if (!!state[2][2] && (state[2][2] === state[1][1]) && (state[1][1] === state[2][0])) return { winner: state[0][0] } // diag
+		if (!!state[0][2] && (state[0][2] === state[1][1]) && (state[1][1] === state[2][0])) return { winner: state[0][2] } // diag
 
 		if (this.isFull()) return { winner: "draw" }
 

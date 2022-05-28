@@ -13,6 +13,7 @@ const delay = 0.3
 const lifetime = 250
 const g = 5e-2
 const D = 1e-3
+let animId
 
 
 class Particle {
@@ -82,21 +83,18 @@ class Firework {
 		const p = []
 
 		const n = Math.floor(Math.random() * (maxTrails - minTrails)) + minTrails
-		const ay = g
 		for (let i = n; i--;) {
 			let ax = D
 			const angle = (i * Math.PI * 2) / n
 			if (angle < Math.PI) ax *= -1
 			const vx = strength * Math.sin(angle)
 			const vy = strength * Math.cos(angle)
-			p.push(new Particle(x, y, vx, vy, ax, ay, colour))
+			p.push(new Particle(x, y, vx, vy, ax, g, colour))
 		}
 		return p
 	}
 
 	update() {
-		console.log(this.colour)
-
 		this.lifetime++
 		if (this.lifetime < 0) return
 		for (let i = this.particles.length; i--;) {
@@ -107,15 +105,14 @@ class Firework {
 }
 
 
-function animation() {
+const animation = (symb) => () => {
 	ctx.fillStyle = "#050505"
 	ctx.fillRect(0, 0, cnv.width, cnv.height)
-	const symb = "o".toUpperCase()
 
 	firework1.update()
 	firework2.update()
 
-	if (symb === "O") {
+	if (symb === "o") {
 		ctx.shadowColor = "#FCF69C"
 		ctx.fillStyle = "#FCF69C"
 	} else {
@@ -133,16 +130,20 @@ function animation() {
 	if (firework1.lifetime === lifetime * delay) firework2 = new Firework()
 	if (firework2.lifetime === lifetime * delay) firework1 = new Firework()
 
-	window.requestAnimationFrame(animation)
+	animId = requestAnimationFrame(animation(symb))
 }
 
-export function initFirework() {
+export const initFirework = (symb) => () => {
 	cnv.width = innerWidth
 	cnv.height = innerHeight
 	firework1 = new Firework()
 	firework2 = new Firework()
 	firework2.lifetime = -lifetime * delay
-	animation()
+	animation(symb)()
+}
+
+export const stopFirework = () => {
+	cancelAnimationFrame(animId)
 }
 
 
