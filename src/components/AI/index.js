@@ -5,7 +5,7 @@ import {
 	gameOver,
 	setCurrPlayer
 } from "../../App.js"
-import { Player } from "../Player"
+import { Player } from "../Player/index.js"
 
 
 export class AI extends Player {

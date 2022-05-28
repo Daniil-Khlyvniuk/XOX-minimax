@@ -1,8 +1,8 @@
-import { AI } from "./components/AI"
-import { Board } from "./components/Board"
-import { initFirework, stopFirework } from "./components/Firework"
-import { Modal } from "./components/Modal"
-import { Player } from "./components/Player"
+import { AI } from "./components/AI/index.js"
+import { Board } from "./components/Board/index.js"
+import { initFirework, stopFirework } from "./components/Firework/index.js"
+import { Modal } from "./components/Modal/index.js"
+import { Player } from "./components/Player/index.js"
 
 
 export const cnv = document.querySelector("#gameAria")

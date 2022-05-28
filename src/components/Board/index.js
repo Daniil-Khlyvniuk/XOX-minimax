@@ -1,7 +1,7 @@
 import { cnv } from "../../App.js"
-import { Circle } from "../Circle"
-import { Cross } from "../Cross"
-import { GridLine } from "../GrigLine"
+import { Circle } from "../Circle/index.js"
+import { Cross } from "../Cross/index.js"
+import { GridLine } from "../GrigLine/index.js"
 
 
 export class Board {
