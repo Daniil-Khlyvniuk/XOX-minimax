@@ -32,7 +32,7 @@ const draw = () => {
 }
 
 const win = (isWon, isDraw) => {
-	cnv.removeEventListener("click", gamePlay)
+	cnv.removeEventListener("click", player.move(board))
 	cnv.style.cursor = "initial";
 
 	(isWon) && setTimeout(initFirework, 600);
@@ -44,20 +44,5 @@ const gameOver = () => {
 
 }
 
-
-const gamePlay = (ev) => {
-	const { x, y } = cnv.getBoundingClientRect()
-	const mouthClickX = ev.x - x
-	const mouthClickY = ev.y - y
-	const i = Math.floor(mouthClickY / FieldSize)
-	const j = Math.floor(mouthClickX / FieldSize)
-	if (board.state[i][j]) return
-
-	const X = Math.floor(mouthClickX / FieldSize) * FieldSize
-	const Y = Math.floor(mouthClickY / FieldSize) * FieldSize
-
-	board.insert(player.symbol, i, j, X, Y)
-}
-
 requestAnimationFrame(board.draw)
-cnv.addEventListener("click", gamePlay)
+cnv.addEventListener("click", player.move(board))
