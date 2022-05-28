@@ -19,7 +19,7 @@ canvas {
   position: absolute;
   inset: 0;
   background-color: #050505;
-  z-index: 5;
+  z-index: 20;
 }
 
 .modal {
@@ -71,7 +71,7 @@ canvas {
   aspect-ratio: 1;
   cursor: pointer;
   position: relative;
-  z-index: 50;
+  z-index: 15;
 }
 
 
