@@ -43,7 +43,7 @@ export class Cross {
 		ctx.stroke()
 		ctx.restore()
 
-		this.curPerc1 += 10;
+		this.curPerc1 += 20;
 		(this.curPerc1 < size - 80) && requestAnimationFrame(secLine)
 		if (this.curPerc1 === size - 80) {
 			this.curPerc = 0
@@ -63,7 +63,7 @@ export class Cross {
 		ctx.lineTo((x + this.curPerc) + gap, ((y + this.curPerc) + gap))
 		ctx.stroke()
 		ctx.restore()
-		this.curPerc += 10;
+		this.curPerc += 20;
 		(this.curPerc < size - 80) && requestAnimationFrame(render)
 		if (this.curPerc === size - 80) {
 			this.firstLine.push((x + this.curPerc - 10) + gap)
