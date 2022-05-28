@@ -20,7 +20,7 @@ export class Cross {
 		ctx.strokeStyle = "#55D8C1"
 		ctx.shadowColor = "#55D8C1"
 		ctx.lineCap = "butt"
-		ctx.shadowBlur = 15
+		ctx.shadowBlur = 10
 	}
 
 	secondLine() {
