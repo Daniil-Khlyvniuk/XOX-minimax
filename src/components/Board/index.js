@@ -1,6 +1,6 @@
+import { cnv } from "../../App.js"
 import { Circle } from "../Circle"
 import { Cross } from "../Cross"
-import { cnv } from "../../App.js"
 import { GridLine } from "../GrigLine"
 
 
@@ -8,6 +8,7 @@ export class Board {
 	constructor(state) {
 		this.state = state
 	}
+
 	FieldSize = cnv.width / 3
 	lines = [
 		new GridLine({
@@ -44,6 +45,8 @@ export class Board {
 		)
 	]
 	draw = this.drawGrid.bind(this)
+	hasWon = this.isWin.bind(this)
+	insert = this.insertSymbol.bind(this)
 
 
 	isEmpty() {
@@ -62,14 +65,13 @@ export class Board {
 		return moves
 	}
 
-	insert(sym, i, j, x, y) {
+	insertSymbol(sym, i, j) {
 		if (!!this.state[i][j]) return
-
 		this.state[i][j] = sym.toLowerCase()
-		this.drawSymbol(sym.toLowerCase(), i, j, x, y)
 	}
 
-	drawSymbol (currSymbol, i, j, x, y){
+	drawSymbol(currSymbol, i, j, x, y) {
+		console.log("test")
 		switch (currSymbol) {
 			case "x":
 				const cross = new Cross(x, y, this.FieldSize)
@@ -82,23 +84,23 @@ export class Board {
 		}
 	}
 
-	isWon() {
-		const { isEmpty, isFull, state } = this
+	isWin() {
+		const { state } = this
 
-		if (isEmpty()) return null
+		if (this.isEmpty()) return null
 
-		if (state[0][0] === state[0][1] && state[0][1] === state[0][2]) return { winner: state[0][0] } // hor
-		if (state[1][0] === state[1][1] && state[1][1] === state[1][2]) return { winner: state[1][0] } // hor
-		if (state[2][0] === state[2][1] && state[2][1] === state[2][2]) return { winner: state[2][0] } // hor
+		if (!!state[0][0] && (state[0][0] === state[0][1]) && (state[0][1] === state[0][2])) return { winner: state[0][0] } // hor
+		if (!!state[1][0] && (state[1][0] === state[1][1]) && (state[1][1] === state[1][2])) return { winner: state[1][0] } // hor
+		if (!!state[2][0] && (state[2][0] === state[2][1]) && (state[2][1] === state[2][2])) return { winner: state[2][0] } // hor
 
-		if (state[0][0] === state[1][0] && state[1][0] === state[2][0]) return { winner: state[0][0] } // vert
-		if (state[0][1] === state[1][1] && state[1][1] === state[2][1]) return { winner: state[0][1] } // vert
-		if (state[0][2] === state[1][2] && state[1][2] === state[2][2]) return { winner: state[0][2] } // vert
+		if (!!state[0][0] && (state[0][0] === state[1][0]) && (state[1][0] === state[2][0])) return { winner: state[0][0] } // vert
+		if (!!state[0][1] && (state[0][1] === state[1][1]) && (state[1][1] === state[2][1])) return { winner: state[0][1] } // vert
+		if (!!state[0][2] && (state[0][2] === state[1][2]) && (state[1][2] === state[2][2])) return { winner: state[0][2] } // vert
 
-		if (state[0][0] === state[1][1] && state[1][1] === state[2][2]) return { winner: state[0][0] } // diag
-		if (state[2][2] === state[1][1] && state[1][1] === state[2][0]) return { winner: state[0][0] } // diag
+		if (!!state[0][0] && (state[0][0] === state[1][1]) && (state[1][1] === state[2][2])) return { winner: state[0][0] } // diag
+		if (!!state[2][2] && (state[2][2] === state[1][1]) && (state[1][1] === state[2][0])) return { winner: state[0][0] } // diag
 
-		if (isFull()) return { winner: "draw" }
+		if (this.isFull()) return { winner: "draw" }
 
 		return null
 	}

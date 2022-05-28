@@ -15,8 +15,8 @@ export class Circle {
 	draw(current) {
 		const { x, y, radius, endPercent } = this
 		if (this.curPerc >= endPercent) return
-		return () => {
 
+		return () => {
 			ctx.save()
 			ctx.lineWidth = 35
 			ctx.strokeStyle = "#FCF69C"
@@ -34,6 +34,7 @@ export class Circle {
 			ctx.stroke()
 			ctx.restore()
 
+			console.log("draw", x, y, radius, endPercent)
 			this.curPerc++;
 			(this.curPerc < endPercent) && requestAnimationFrame(this.render(this.curPerc / 100));
 			(this.curPerc === endPercent) && (this.curPerc = 0)

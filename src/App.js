@@ -1,6 +1,7 @@
 import { Board } from "./components/Board"
 import { initFirework } from "./components/Firework"
 import { Player } from "./components/Player"
+import { AI } from "./components/ComputerPlayer"
 
 
 export const cnv = document.querySelector("#gameAria")
@@ -12,7 +13,14 @@ export const board = new Board([
 	[ "", "", "" ]
 ])
 
-export const player = new Player("o")
+
+export let currPlayer = "o"
+export const hu = new Player("o")
+export const AI_PLAYER = new AI("o")
+
+export const setCurrPlayer = (val) => {
+	currPlayer = val
+}
 
 const draw = () => {
 	cnv.width = innerWidth
@@ -30,19 +38,28 @@ const draw = () => {
 
 	requestAnimationFrame(draw)
 }
-
 const win = (isWon, isDraw) => {
-	cnv.removeEventListener("click", player.move(board))
+	cnv.removeEventListener("click", hu.move(board))
 	cnv.style.cursor = "initial";
 
-	(isWon) && setTimeout(initFirework, 600);
-	(isDraw) && setTimeout(draw, 600)
+	// (isWon) && setTimeout(initFirework, 600);
+	// (isDraw) && setTimeout(draw, 600)
 }
-
-
 const gameOver = () => {
-
 }
-
+const gamePlay = () => {
+	switch (currPlayer) {
+		case hu.symbol:
+			cnv.addEventListener("click", AI_PLAYER.move(board))
+			// cnv.addEventListener("click", hu.move(board))
+			return
+		case AI_PLAYER.symbol:
+			// const [ i, j ] = AI_PLAYER.getBestMove(board)
+			// cnv.addEventListener("MouseUp", AI_PLAYER.move(board, i, j))
+			// currPlayer = hu.symbol
+			// return
+	}
+}
 requestAnimationFrame(board.draw)
-cnv.addEventListener("click", player.move(board))
+gamePlay()
+// cnv.addEventListener("click", hu.move(board))
