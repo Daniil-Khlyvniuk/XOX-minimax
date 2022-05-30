@@ -40,11 +40,10 @@ export const gameOver = ({ winner }) => {
 	cnv.style.cursor = "initial"
 
 	switch (winner) {
-		case "x":
-		case "o":
-			return setTimeout(initFirework(winner), 600)
-		default:
+		case "draw":
 			return setTimeout(draw, 600)
+		default:
+			return setTimeout(initFirework(winner), 600)
 	}
 }
 
@@ -70,8 +69,8 @@ export const newGame = (playerSymb) => {
 	currPlayer = "x"
 	cancelAnimationFrame(drawAmim)
 	stopFirework()
-
 	let aiSymb = playerSymb === "x" ? "o" : "x"
+
 	AI_PLAYER = new AI(aiSymb)
 	hu = new Player(playerSymb)
 	board = new Board([

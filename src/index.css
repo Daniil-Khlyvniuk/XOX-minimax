@@ -1,11 +1,18 @@
+:root {
+  --dark-bg-color: #050505;
+  --green-color: #55D8C1;
+  --yellow-color: #FCF69C;
+}
+
 * {
   margin: 0;
   padding: 0;
-  font-family: Courier-New, monospace;
+  font-family: Courier, monospace, sans-serif;
+
 }
 
 body {
-  background-color: #050505;
+  background-color: var(--dark-bg-color);
 }
 
 canvas {
@@ -18,7 +25,7 @@ canvas {
 .wrapper {
   position: absolute;
   inset: 0;
-  background-color: #050505;
+  background-color: var(--dark-bg-color);
   z-index: 20;
 }
 
@@ -30,7 +37,8 @@ canvas {
   font-size: 2rem;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #FCF69C;
+  color: var(--yellow-color);
+  text-shadow: 1px 1px 5px var(--yellow-color)
 }
 
 .modal h1 {
@@ -54,9 +62,11 @@ canvas {
   padding: .5em;
   margin: .5em;
   font-size: 2rem;
-  background-color: #55D8C1;
+  background-color: var(--green-color);
+  box-shadow: #55D8C1 1px 1px 5px;
   cursor: pointer;
   border-radius: .2em;
+  font-weight: bold;
 }
 
 .reload {
@@ -76,9 +86,11 @@ canvas {
 
 
 .color-green {
-  color: #55D8C1
+  color: var(--green-color);
+  text-shadow: 1px 1px 5px var(--green-color)
+
 }
 
 .color-yellow {
-  color: #FCF69C
+  color: var(--yellow-color);
 }

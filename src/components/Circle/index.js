@@ -18,9 +18,9 @@ export class Circle {
 
 		return () => {
 			ctx.save()
-			ctx.lineWidth = 35
+			ctx.lineWidth = 10
 			ctx.strokeStyle = "#FCF69C"
-			ctx.shadowBlur = 10
+			ctx.shadowBlur = 15
 			ctx.shadowColor = "#FCF69C"
 			ctx.lineCap = "round"
 			ctx.clearRect(x + 5, y + 5, FieldSize - 10, FieldSize - 10)

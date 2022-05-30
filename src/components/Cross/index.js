@@ -3,20 +3,19 @@ import { ctx, FieldSize } from "../../App.js"
 
 export class Cross {
 	constructor(x, y, size = FieldSize, gap = 40) {
-		this.x = x
-		this.y = y
 		this.size = size
 		this.gap = gap
+		this.x = x + this.gap
+		this.y = y + this.gap
 		this.curPerc = 0
 		this.curPerc1 = 0
-		this.firstLine = []
 	}
 
 	render = this.drawFirstLine.bind(this)
 	secLine = this.secondLine.bind(this)
 
 	lineStyles() {
-		ctx.lineWidth = 40
+		ctx.lineWidth = 10
 		ctx.strokeStyle = "#55D8C1"
 		ctx.shadowColor = "#55D8C1"
 		ctx.lineCap = "butt"
@@ -25,31 +24,26 @@ export class Cross {
 
 	secondLine() {
 		const { x, y, size, gap, lineStyles, secLine } = this
+		let X1 = x + this.curPerc1
+		let Y1 = (y + size - gap * 2) - this.curPerc1
 
 		ctx.save()
 		lineStyles()
-		ctx.clearRect(x + 5, y + 5, FieldSize - 10, FieldSize - 10)
-
+		ctx.clearRect(x - gap * .5, y - gap * .5, FieldSize - gap, FieldSize - gap)
 
 		ctx.beginPath()
-		ctx.moveTo(x + gap, y + gap)
-		ctx.lineTo(this.firstLine[0], this.firstLine[1])
+		ctx.moveTo(x, y)
+		ctx.lineTo(x + size - gap * 2, y + size - gap * 2)
 		ctx.stroke()
 
-
 		ctx.beginPath()
-		ctx.moveTo(x + gap, y + size - gap)
-		ctx.lineTo(x + this.curPerc1 + gap, (y + size - gap) - this.curPerc1)
+		ctx.moveTo(x, y + size - gap * 2)
+		ctx.lineTo(X1, Y1)
 		ctx.stroke()
 		ctx.restore()
 
 		this.curPerc1 += 20;
-		(this.curPerc1 < size - 80) && requestAnimationFrame(secLine)
-		if (this.curPerc1 === size - 80) {
-			this.curPerc = 0
-			this.curPerc1 = 0
-			this.firstLine = []
-		}
+		(this.curPerc1 <= size - gap * 2) && requestAnimationFrame(secLine)
 	}
 
 	drawFirstLine() {
@@ -57,69 +51,19 @@ export class Cross {
 
 		ctx.save()
 		lineStyles()
-		ctx.clearRect(x + 5, y + 5, FieldSize - 10, FieldSize - 10)
+		ctx.clearRect(x - gap * .5, y - gap * .5, FieldSize - gap, FieldSize - gap)
 		ctx.beginPath()
-		ctx.moveTo(x + gap, y + gap)
-		ctx.lineTo((x + this.curPerc) + gap, ((y + this.curPerc) + gap))
+
+		ctx.moveTo(x, y)
+		ctx.lineTo(x + this.curPerc, y + this.curPerc)
+
 		ctx.stroke()
 		ctx.restore()
-		this.curPerc += 20;
-		(this.curPerc < size - 80) && requestAnimationFrame(render)
-		if (this.curPerc === size - 80) {
-			this.firstLine.push((x + this.curPerc - 10) + gap)
-			this.firstLine.push((y + this.curPerc - 10) + gap)
-			return requestAnimationFrame(secLine)
-		}
 
+		this.curPerc += 20
+		if (this.curPerc === size - gap * 2) requestAnimationFrame(secLine);
+		(this.curPerc <= size - gap * 2) && requestAnimationFrame(render)
 	}
 }
 
 
-// let curPerc = 0
-// let curPerc1 = 0
-// let firstLine = []
-
-
-// export const Cross = (x, y, size = FieldSize, gap = 40) => () => {
-// 	ctx.save()
-// 	lineStyles()
-//
-// 	ctx.clearRect(x + 5, y + 5, FieldSize - 10, FieldSize - 10)
-// 	ctx.beginPath()
-// 	ctx.moveTo(x + gap, y + gap)
-// 	ctx.lineTo((x + curPerc) + gap, ((y + curPerc) + gap))
-// 	ctx.stroke()
-// 	ctx.restore()
-//
-//
-// 	curPerc += 10;
-// 	(curPerc < size - 80) && requestAnimationFrame(Cross(x, y, size))
-// 	if (curPerc === size - 80) {
-// 		firstLine.push((x + curPerc - 10) + gap)
-// 		firstLine.push((y + curPerc - 10) + gap)
-// 		return requestAnimationFrame(secondLine(x, y, size, gap))
-// 	}
-// }
-//
-// const secondLine = (x, y, size, gap) => () => {
-// 	ctx.save()
-// 	lineStyles()
-// 	ctx.clearRect(x + 5, y + 5, FieldSize - 10, FieldSize - 10)
-//
-//
-// 	ctx.beginPath()
-// 	ctx.moveTo(x + gap, y + gap)
-// 	ctx.lineTo(firstLine[0], firstLine[1])
-// 	ctx.stroke()
-//
-//
-// 	ctx.beginPath()
-// 	ctx.moveTo(x + gap, y + size - gap)
-// 	ctx.lineTo(x + curPerc1 + gap, (y + size - gap) - curPerc1)
-// 	ctx.stroke()
-// 	ctx.restore()
-//
-// 	curPerc1 += 10;
-// 	(curPerc1 < size - 80) && requestAnimationFrame(secondLine(x, y, size,
-// gap)) if (curPerc1 === size - 80) { curPerc = 0 curPerc1 = 0 firstLine = []
-// } }

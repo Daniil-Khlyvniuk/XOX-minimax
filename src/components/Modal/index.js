@@ -28,7 +28,7 @@ export class Modal {
 			<div class="modal">
 			<h1>"<scpan class="color-green">X</scpan>O<scpan class="color-green">X</scpan>"</h1>
 			<h2>
-			Chose symbol:
+			Select symbol:
 			</h2>
 			<label>
 		<scpan class="color-green">X</scpan>
