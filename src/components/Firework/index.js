@@ -1,23 +1,15 @@
 import { cnv, ctx } from "../../App.js"
 
 
+let animId
 let firework1
 let firework2
-const minStrength = 5
-const maxStrength = 10
-const minTrails = 20
-const maxTrails = 35
-const particleRadius = .5
-const trailLength = 5
-const delay = 0.3
-const lifetime = 250
-const g = 5e-2
-const D = 1e-3
-let animId
 
 
 class Particle {
-	constructor(x, y, vx, vy, ax, ay, colour) {
+	#maxLifetime
+
+	constructor(x, y, vx, vy, ax, ay, colour, trailLength, lifetime, particleRadius) {
 		this.x = x
 		this.y = y
 		this.vx = vx
@@ -25,14 +17,20 @@ class Particle {
 		this.ax = ax
 		this.ay = ay
 		this.lifetime = lifetime
+		this.#maxLifetime = lifetime
 		this.path = []
 		this.colour = colour
 		this.r = particleRadius
+		this.trailLength = trailLength
 	}
 
 	update() {
 		this.lifetime--
-		if (this.path.length >= trailLength) this.path.shift()
+
+		if (this.path.length >= this.trailLength) {
+			this.path.shift()
+		}
+
 		this.path.push([ this.x, this.y ])
 
 		this.vy += this.ay
@@ -42,21 +40,23 @@ class Particle {
 	}
 
 	draw() {
-		const opacity = ((this.lifetime * 100) / lifetime) / 100
+		const opacity = ((this.lifetime * 100) / this.#maxLifetime) / 100
 
 		ctx.fillStyle = "rgba(" + this.colour + opacity * 0.6 + ")"
-		if (this.lifetime > lifetime * 0.95) ctx.fillStyle = "#fff"
+		if (this.lifetime > this.#maxLifetime * 0.95) ctx.fillStyle = "#fff"
 		ctx.lineWidth = 1
 		ctx.beginPath()
+
 		ctx.moveTo(this.x - this.r, this.y)
 		ctx.lineTo(this.path[0][0], this.path[0][1])
 		ctx.lineTo(this.x + this.r, this.y)
-		ctx.closePath()
 		ctx.fill()
+		ctx.closePath()
 
 		ctx.fillStyle = `rgba(${ this.colour }${ opacity }})`
-		if (this.lifetime > lifetime * .95) ctx.fillStyle = "#fff"
+		if (this.lifetime > this.#maxLifetime * .95) ctx.fillStyle = "#fff"
 		ctx.beginPath()
+
 		ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2)
 		ctx.fill()
 		ctx.closePath()
@@ -64,32 +64,66 @@ class Particle {
 }
 
 class Firework {
+	#minStrength = 5
+	#maxStrength = 7
+	#minTrails = 20
+	#maxTrails = 35
+	#particleRadius = .5
+	#trailLength = 3
+	#delay = .4
+	#maxLifetime = 200
+	#g = 5e-2
+	#D = 1e-3
+
 	constructor() {
-		this.x = cnv.width * (Math.random() * 0.8 + 0.1)
-		this.y = cnv.height * (Math.random() * 0.8 + 0.1)
-		this.strength =
-			Math.random() * (maxStrength - minStrength) + minStrength
-		this.colour = `
-		${ Math.floor((1 + Math.random()) * 256 / 2) },
-		${ Math.floor((1 + Math.random()) * 256 / 2) },
-		${ Math.floor((1 + Math.random()) * 256 / 2) },
-		`
+		this.x = this.setRandomPoint(cnv.width)
+		this.y = this.setRandomPoint(cnv.height)
+		this.strength = this.setRandomStrength()
+		this.colour = this.setRandomColor()
 		this.lifetime = 0
 		this.particles = this.getParticles(this.x, this.y, this.strength, this.colour)
 	}
 
+	setRandomPoint(size) {
+		return size * (Math.random() * .8 + .1)
+	}
+
+	setRandomStrength() {
+		return Math.random() * (this.#maxStrength - this.#minStrength) + this.#minStrength
+	}
+
+	setRandomColor() {
+		return `
+		${ Math.floor((1 + Math.random()) * 256 / 2) },
+		${ Math.floor((1 + Math.random()) * 256 / 2) },
+		${ Math.floor((1 + Math.random()) * 256 / 2) },
+		`
+	}
 
 	getParticles(x, y, strength, colour) {
 		const p = []
+		const n = Math.floor(Math.random() * (this.#maxTrails - this.#minTrails)) + this.#minTrails
 
-		const n = Math.floor(Math.random() * (maxTrails - minTrails)) + minTrails
 		for (let i = n; i--;) {
-			let ax = D
+			let ax = this.#D
+			const ay = this.#g
 			const angle = (i * Math.PI * 2) / n
 			if (angle < Math.PI) ax *= -1
 			const vx = strength * Math.sin(angle)
 			const vy = strength * Math.cos(angle)
-			p.push(new Particle(x, y, vx, vy, ax, g, colour))
+
+			p.push(new Particle(
+				x,
+				y,
+				vx,
+				vy,
+				ax,
+				ay,
+				colour,
+				this.#trailLength,
+				this.#maxLifetime,
+				this.#particleRadius)
+			)
 		}
 		return p
 	}
@@ -101,6 +135,14 @@ class Firework {
 			this.particles[i].update()
 			this.particles[i].draw()
 		}
+	}
+
+	isFinished() {
+		return this.lifetime === this.#maxLifetime * this.#delay
+	}
+
+	setLifeTime(value) {
+		this.lifetime = value
 	}
 }
 
@@ -127,8 +169,8 @@ const animation = (symb) => () => {
 	ctx.textAlign = "center"
 	ctx.fillText(`The "${ symb }" has won`, cnv.width / 2, cnv.height / 2)
 
-	if (firework1.lifetime === lifetime * delay) firework2 = new Firework()
-	if (firework2.lifetime === lifetime * delay) firework1 = new Firework()
+	if (firework1.isFinished()) firework2 = new Firework()
+	if (firework2.isFinished()) firework1 = new Firework()
 
 	animId = requestAnimationFrame(animation(symb))
 }
@@ -138,7 +180,7 @@ export const initFirework = (symb) => () => {
 	cnv.height = innerHeight
 	firework1 = new Firework()
 	firework2 = new Firework()
-	firework2.lifetime = -lifetime * delay
+	firework2.setLifeTime(-100)
 	animation(symb)()
 }
 

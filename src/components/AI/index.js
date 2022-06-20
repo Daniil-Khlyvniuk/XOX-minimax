@@ -79,6 +79,17 @@ export class AI extends Player {
 		return move
 	}
 
+
+	initMove(board, { i, j, X, Y }) {
+		return () => {
+			board.insert(this.symbol, i, j)
+			board.drawSymbol(this.symbol, i, j, X, Y)
+			cnv.style.cursor = "pointer"
+			const res = board.isWin()
+			if (res) gameOver(res)
+		}
+	}
+
 	move(board) {
 		return () => {
 			const [ i, j ] = this.getBestMove(board) || []
@@ -86,15 +97,10 @@ export class AI extends Player {
 			const X = FieldSize * j
 			const Y = FieldSize * i
 			if (board.state?.[i]?.[j] || !!board.isWin() || currPlayer !== this.symbol) return
+			const position = { i, j, X, Y }
 
 			cnv.style.cursor = "initial"
-			setTimeout(() => {
-				board.insert(this.symbol, i, j)
-				board.drawSymbol(this.symbol, i, j, X, Y)
-				cnv.style.cursor = "pointer"
-				const res = board.isWin()
-				if (res) gameOver(res)
-			}, 250)
+			setTimeout(this.initMove(board, position), 250)
 			setCurrPlayer(this.oponentSymbol)
 		}
 	}

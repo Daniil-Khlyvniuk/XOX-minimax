@@ -48,6 +48,17 @@ export class Board {
 	insert = this.insertSymbol.bind(this)
 
 
+	getEmptyFields() {
+		return this.state.reduce((emptyFields, row, rowInd) => {
+			row.forEach((column, columnInd) => {
+				if (!this.state[rowInd][columnInd]) {
+					emptyFields.push([ rowInd, columnInd ])
+				}
+			})
+			return emptyFields
+		}, [])
+	}
+
 	isEmpty() {
 		return this.state.every(row => row.every(el => !el))
 	}

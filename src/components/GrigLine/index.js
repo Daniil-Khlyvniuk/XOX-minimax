@@ -10,7 +10,6 @@ export class GridLine {
 		this.curPerc = 0
 		this.direction = direction
 	}
-
 	draw = this.drawLine.bind(this)
 
 	drawLine() {
